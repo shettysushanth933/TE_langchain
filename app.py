@@ -6,6 +6,16 @@ import pdf2image
 from dotenv import load_dotenv
 import google.generativeai as genai
 
+
+def input_pdf_setup(uploaded_file):
+    with st.spinner("Processing PDF... Please wait ⏳"):
+        images = pdf2image.convert_from_bytes(
+            uploaded_file.read(), 
+            dpi=100, 
+            poppler_path="/usr/bin/"
+        )
+    return images
+
 load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
