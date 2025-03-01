@@ -19,21 +19,8 @@ job_roles_skills = {
 
 def get_gemini_response(input_text, pdf_content, prompt):
     try:
-        # Add formatting instructions to all prompts
-        formatting_instructions = """
-        Format your response with:
-        - Use **bold text** for all headings and important points
-        - Use bullet points for lists
-        - Keep paragraphs short (2-3 sentences max)
-        - Use _italics_ for emphasis
-        - Include a brief summary at the top
-        - Use markdown formatting throughout
-        """
-        
-        enhanced_prompt = formatting_instructions + "\n\n" + prompt
-        
         model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content([input_text, pdf_content[0], enhanced_prompt])
+        response = model.generate_content([input_text, pdf_content[0], prompt])
         return response.text if response and hasattr(response, "text") else "Error: No response received."
     except Exception as e:
         return f"Error generating response: {str(e)}"
@@ -105,26 +92,19 @@ with st.sidebar:
     </style>
     """, unsafe_allow_html=True)
     
-    # Fixed theme toggle with better styling
+    # Create a container for the theme toggle
     theme_container = st.container()
     with theme_container:
         st.write("### Theme Selection")
-        
-        # Changed to two columns with better sizing and styling
-        col1, col2, col3 = st.columns([1, 2, 1])
+        col1, col2 = st.columns([1, 3])
         with col1:
-            st.markdown("🌙")
+            st.write("🌙")
         with col2:
-            # Using selectbox instead of toggle for more reliable theme switching
-            selected_theme = st.selectbox(
-                "",
-                options=["Light", "Dark"],
-                index=0 if st.session_state.theme == 'light' else 1,
-                label_visibility="collapsed"
-            )
-            st.session_state.theme = selected_theme.lower()
-        with col3:
-            st.markdown("☀️")
+            theme_toggle = st.toggle("☀️", value=st.session_state.theme == 'light')
+            if theme_toggle:
+                st.session_state.theme = 'light'
+            else:
+                st.session_state.theme = 'dark'
 
     st.markdown(f"<p style='color: {themes[st.session_state.theme]['primary_blue']}; font-weight: 500;'>Current: {st.session_state.theme.capitalize()} Mode</p>", unsafe_allow_html=True)
 
@@ -292,36 +272,6 @@ st.markdown(f"""
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     }}
     
-    /* Enhanced styling for markdown content in results */
-    .result-container h1, 
-    .result-container h2, 
-    .result-container h3, 
-    .result-container h4 {{
-        color: {theme['primary_blue']};
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
-    }}
-    
-    .result-container ul, 
-    .result-container ol {{
-        padding-left: 1.5rem;
-        margin-bottom: 1rem;
-    }}
-    
-    .result-container li {{
-        margin-bottom: 0.5rem;
-    }}
-    
-    .result-container strong {{
-        color: {theme['primary_blue']};
-        font-weight: 600;
-    }}
-    
-    .result-container p {{
-        margin-bottom: 0.75rem;
-        line-height: 1.6;
-    }}
-    
     /* Section dividers */
     .divider {{
         height: 3px;
@@ -462,20 +412,13 @@ with tab1:
             
             **Task**:
             Predict job role fit percentage and explain why the candidate is a good or bad fit for this role based on their skills and the job description.
-            
-            Begin with a clear overall summary showing the fit percentage. Then use sections with bold headings for:
-            1. Strengths
-            2. Areas for Improvement
-            3. Overall Assessment
-            
-            Keep your response concise and visually structured.
             """
             
             input_text = f"Job Role: {expected_role}\nJob Description: {job_description}"
             response = get_gemini_response(input_text, pdf_content or [""], prompt)
             
             st.markdown("<div class='result-container'>", unsafe_allow_html=True)
-            st.markdown(response, unsafe_allow_html=False)
+            st.write(response)
             st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.warning("Please select your skills.")
@@ -510,21 +453,14 @@ with tab2:
             - {', '.join(current_skills)}
             
             **Task**:
-            Analyze the importance of missing skills for this role.
-            
-            Begin with a brief summary, then create 3 clear categories:
-            1. **Critical Skills to Acquire** - Skills that are mandatory for the role
-            2. **Important Skills to Develop** - Skills that would significantly improve fit
-            3. **Nice-to-Have Skills** - Skills that would be beneficial but aren't essential
-            
-            For each skill, provide a brief 1-sentence explanation of its importance.
+            Analyze the importance of missing skills for this role. Explain which missing skills are most critical to acquire and why.
             """
             
             input_text = f"Job Role: {expected_role}\nJob Description: {job_description}"
             response = get_gemini_response(input_text, pdf_content or [""], prompt)
             
             st.markdown("<div class='result-container'>", unsafe_allow_html=True)
-            st.markdown(response, unsafe_allow_html=False)
+            st.write(response)
             st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.warning("Please select your skills.")
@@ -556,24 +492,15 @@ with tab3:
             
             **Task**:
             Recommend specific courses, learning resources, or training programs to help the candidate acquire the missing skills.
-            
-            Start with a brief intro explaining the importance of these skills for the role.
-            
-            For each missing skill, provide ONE top recommendation in this format:
-            
-            **[Skill Name]**
-            - **Course:** [Name of course]
-            - **Platform:** [Platform name]
-            - **Why It's Valuable:** [1-sentence explanation]
-            
-            Prioritize the most critical skills to learn first. Keep recommendations specific rather than generic.
+            For each recommendation, provide the name of the course/resource, the platform (e.g., Coursera, Udemy, etc.), 
+            and a brief explanation of why it's beneficial.
             """
             
             input_text = f"Job Role: {expected_role}\nJob Description: {job_description}"
             response = get_gemini_response(input_text, pdf_content or [""], prompt)
             
             st.markdown("<div class='result-container'>", unsafe_allow_html=True)
-            st.markdown(response, unsafe_allow_html=False)
+            st.write(response)
             st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.warning("Please select your skills.")
@@ -593,30 +520,18 @@ with tab4:
             **Job Description**: {job_description}
             
             **Task**:
-            Provide concise, visual feedback on the resume using this structure:
-            
-            **Resume Score:** [X/10]
-            
-            **Strengths:**
-            • [Bullet point list of 3-4 key strengths]
-            
-            **Areas for Improvement:**
-            • [Bullet point list of 3-4 key improvements]
-            
-            **Quick Recommendations:**
-            • [3-5 specific, actionable suggestions]
-            
-            **Overall Assessment:**
-            [2-3 sentences with final verdict]
-            
-            Use bold for all headings and key terms. Keep each bullet point to 1-2 sentences maximum.
+            Provide detailed feedback on how well the resume matches the job requirements. Include:
+            1. Overall impression of the resume
+            2. Strengths in relation to the job role
+            3. Areas for improvement
+            4. Specific suggestions to enhance the resume for this role
             """
             
             input_text = f"Job Role: {expected_role}\nJob Description: {job_description}"
             response = get_gemini_response(input_text, pdf_content, prompt)
             
             st.markdown("<div class='result-container'>", unsafe_allow_html=True)
-            st.markdown(response, unsafe_allow_html=False)
+            st.write(response)
             st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.warning("Please upload a resume.")
@@ -634,31 +549,22 @@ with tab5:
             **Job Description**: {job_description}
             
             **Task**:
-            Evaluate the resume against the job role and provide a percentage match.
+            Evaluate the resume against the job role and provide a percentage match. 
+            Consider both the standard skills for this role and any specific requirements mentioned in the job description.
+            Break down the percentage into different categories:
+            1. Technical skills match
+            2. Experience level match
+            3. Education/certification match
+            4. Overall fit
             
-            Begin with a large, clear overall match percentage, then break it down into these categories:
-            
-            **Technical Skills:** [X%]
-            • Brief explanation of technical skills match
-            
-            **Experience:** [X%]
-            • Brief explanation of experience match
-            
-            **Education/Certifications:** [X%]
-            • Brief explanation of education match
-            
-            **Overall Assessment:**
-            [2-3 sentences with final recommendation]
-            
-            Use visual progress indicators with each percentage.
-            Keep explanations to 1-2 sentences each.
+            Provide a single overall percentage at the beginning of your response, followed by the detailed breakdown.
             """
             
             input_text = f"Job Role: {expected_role}\nJob Description: {job_description}"
             response = get_gemini_response(input_text, pdf_content, prompt)
             
             st.markdown("<div class='result-container'>", unsafe_allow_html=True)
-            st.markdown(response, unsafe_allow_html=False)
+            st.write(response)
             st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.warning("Please upload a resume.")
