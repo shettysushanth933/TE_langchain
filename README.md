@@ -1,4 +1,4 @@
-## ✨ SkillBridgeAI: Intelligent Resume & Job Description Analyzer
+## SkillBridgeAI: Intelligent Resume & Job Description Analyzer
 <p align="center">
 <img src="https://img.shields.io/badge/Python-3.9%2B-blue.svg" alt="Python Version">
 <img src="https://img.shields.io/badge/Framework-Streamlit-red.svg" alt="Framework">
@@ -151,6 +151,7 @@ Contributions are welcome\! If you have suggestions for improvements or want to 
 ## 📄 License
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
 
 
 
