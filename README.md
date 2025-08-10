@@ -1,4 +1,17 @@
-# SkillBridgeAI: Intelligent Resume & Job Description Analyzer
+SkillBridgeAI: Intelligent Resume & Job Description Analyzer
+<p align="center">
+<img src="path/to/your/logo.png" alt="SkillBridgeAI Logo" width="200"/>
+</p>
+<p align="center">
+<em>(Note: Replace <code>path/to/your/logo.png</code> with the actual path to your logo file.)</em>
+</p>
+
+<p align="center">
+<img src="https://img.shields.io/badge/Python-3.9%2B-blue.svg" alt="Python Version">
+<img src="https://img.shields.io/badge/Framework-Streamlit-red.svg" alt="Framework">
+<img src="https://img.shields.io/badge/API-Google%20Gemini-purple.svg" alt="API">
+<img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
+</p>
 
 SkillBridgeAI is a sophisticated Streamlit web application designed to bridge the gap between job seekers and their dream jobs. By leveraging the power of Google's Gemini 1.5 Flash model, it provides a multi-faceted analysis of a user's resume against a specific job description.
 
@@ -145,4 +158,5 @@ Contributions are welcome\! If you have suggestions for improvements or want to 
 ## 📄 License
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
 
