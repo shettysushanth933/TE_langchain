@@ -54,7 +54,7 @@ Follow these steps to get SkillBridgeAI running on your local machine.
 1.  **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/your-username/SkillBridgeAI.git
+    git clone https://github.com/shettysushanth933/TE_langchain.git
     cd SkillBridgeAI
     ```
 
@@ -145,3 +145,4 @@ Contributions are welcome\! If you have suggestions for improvements or want to 
 ## 📄 License
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
